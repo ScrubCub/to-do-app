@@ -1,12 +1,13 @@
-import { createElements, appendAllChildren, setLabelForInput } from "./utils.js";
+import { createElements, appendAllChildren, setLabelForInput, createTaskObject } from "./utils.js";
 
-export default (function createTaskDialogWindow() {
+export function createTaskDiv(taskList) {
     const [
         taskDiv,
         taskNameDiv,
         taskTimesDiv,
-        taskCheckboxesDiv
-    ] = createElements('div', 4);
+        taskCheckboxesDiv,
+        finalTaskName
+    ] = createElements('div', 5);
     
     const [
         taskNameInput,
@@ -23,9 +24,6 @@ export default (function createTaskDialogWindow() {
         priorityBoxLabel
     ] = createElements('label', 4);
     
-    const taskDialogWindow = document.createElement('dialog');
-    taskDialogWindow.id = 'task_dialog_window';
-
     taskNameInput.placeholder = 'Enter task name here...';
     taskNameInput.id = 'task_name_input';
 
@@ -39,9 +37,10 @@ export default (function createTaskDialogWindow() {
     setAllDayBoxLabel.textContent = 'Set to all day';
 
     priorityBox.type = 'checkbox';
+    priorityBox.value = false;
     priorityBoxLabel.textContent = 'Set task as important'
 
-    let submitTaskButton = document.createElement('button');
+    const submitTaskButton = document.createElement('button');
     submitTaskButton.type = 'button';
     submitTaskButton.textContent = 'Submit'
     
@@ -49,7 +48,6 @@ export default (function createTaskDialogWindow() {
     setLabelForInput(taskEndInput, taskEndLabel, 'task_end');
     setLabelForInput(setAllDayBox, setAllDayBoxLabel, 'set_all_day');
     setLabelForInput(priorityBox, priorityBoxLabel, 'priority_box');
-    taskDialogWindow.appendChild(taskDiv);
     appendAllChildren(taskDiv, [taskNameDiv, taskTimesDiv, taskCheckboxesDiv, submitTaskButton]);
     taskNameDiv.appendChild(taskNameInput);
     appendAllChildren(taskTimesDiv, [taskStartInput, taskEndInput, taskStartLabel, taskEndLabel]);
@@ -75,5 +73,18 @@ export default (function createTaskDialogWindow() {
         }
     });
 
-    return taskDialogWindow;
-})();
+    submitTaskButton.addEventListener('click', () => {
+        let projectDescInput = document.querySelector('#project_desc_input');
+        let task = taskNameInput.value;
+        let start = taskStartInput.value;
+        let end = taskEndInput.value;
+        let priority = priorityBox.value;
+        finalTaskName.textContent = task;
+        const taskObject = createTaskObject(task, start, end, priority);
+        taskList.push(taskObject);
+        taskDiv.remove();
+        projectDescInput.after(finalTaskName);
+    })
+
+    return taskDiv;
+};

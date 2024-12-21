@@ -1,30 +1,37 @@
-import { createElements, appendAllChildren } from "./utils.js";
+import { createElements, appendAllChildren, createProjectObject, updateTaskProjectParent } from "./utils.js";
+import { globalProjectList } from "./entry.js";
+import { createTaskDiv } from "./task.js";
 
-
-//exports a d
-export default (function createProjectDialogWindow() {
+export function createProjectDialogWindow() {
+    let taskList = [];
     const [
         projectDiv,
-        projectTitleDiv,
+        projectTitleInputDiv,
         projectDescDiv,
         addNewTaskDiv
     ] = createElements('div', 4);
     
     const [
         projectTitleInput,
-        projectDescInput
-    ] = createElements('input', 2);
+    ] = createElements('input', 1);
     
     const [
-        addNewTaskBtn
-    ] = createElements('button', 1);
+        addNewTaskBtn,
+        submitProjectButton
+    ] = createElements('button', 2);
     
     const projectDialogWindow = document.createElement('dialog');
     projectDialogWindow.id = 'project_dialog_window';
+
+    const projectDescInput = document.createElement('textarea');
+    // projectDescInput.setAttribute('maxlength', '200');
+    projectDescInput.maxLength = '200';
+
+    projectDiv.id = 'project_div';
     
-    appendAllChildren(projectDiv, [projectTitleDiv, projectDescDiv, addNewTaskDiv]);
+    appendAllChildren(projectDiv, [projectTitleInputDiv, projectDescDiv, addNewTaskDiv, submitProjectButton]);
     projectDialogWindow.appendChild(projectDiv);
-    projectTitleDiv.appendChild(projectTitleInput);
+    projectTitleInputDiv.appendChild(projectTitleInput);
     projectDescDiv.appendChild(projectDescInput);
     addNewTaskDiv.appendChild(addNewTaskBtn);
 
@@ -37,11 +44,32 @@ export default (function createProjectDialogWindow() {
     addNewTaskBtn.textContent = 'Add new task';
     addNewTaskBtn.id = 'add_new_task_button';
 
+    submitProjectButton.textContent = 'Submit Project';
+    submitProjectButton.id = 'submit_project_button';
+
     addNewTaskBtn.addEventListener('click', () => {
-        // createNewTask(); 
+        let taskDiv = createTaskDiv(taskList);
+        projectDiv.appendChild(taskDiv);
 
     });
 
+    submitProjectButton.addEventListener('click', () => {
+        projectDialogWindow.close();
+        let projectTitleDiv = document.createElement('div');
+        let projectList = document.querySelector('#project_list_div');
+        let title = projectTitleInput.value;
+        let desc = projectDescInput.value;
+        projectTitleDiv.textContent = title;
+        projectList.appendChild(projectTitleDiv);
+        const projectObject = createProjectObject(title, desc, taskList);
+        updateTaskProjectParent(title, taskList);
+        taskList = [];
+        globalProjectList.push(projectObject);
+        console.log(globalProjectList[0].tasks);
+        projectDialogWindow.remove();
+        // add updater for main window
+    })
+
     return projectDialogWindow;
 
-})();
+};

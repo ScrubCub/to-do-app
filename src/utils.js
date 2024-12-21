@@ -45,3 +45,9 @@ export function createTaskObject(task, start, end, priority, projectParent) {
 
     return taskObject;
 };
+
+export function updateTaskProjectParent(parentName, tasks) {
+    tasks.forEach((taskObject) => {
+        taskObject.parent = parentName;
+    })
+}
