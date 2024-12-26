@@ -1,3 +1,229 @@
 body {
-    background-color: salmon;
+    position: absolute;
+    background-color: rgb(245, 236, 205);
+    height: 100vh;
+    width: 90vw;
+}
+
+body > div {
+    position: relative;
+    left: 5%;
+}
+
+button, input, textarea, p {
+    padding: 0 0;
+    margin: 0 0;
+}
+
+body > div {
+    height: 100%;
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 100%;
+}
+
+#sidebar_div {
+    background-color: rgb(252, 200, 194);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+}
+
+#sidebar_logo_div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#sidebar_logo {
+    width: 100%;
+    aspect-ratio: auto;
+}
+
+#project_list_div {
+    align-self: start;
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+#project_dialog_window {
+    height: fit-content;
+    width: max-content;
+}
+
+#project_div {
+    transition: max-height 0.5s;
+    overflow-y: hidden;
+    
+}
+
+.projects {
+    background-color: rgb(245, 236, 205);
+    height: max-content;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.75rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.projects > div > p {
+    word-break: break-all;
+}
+
+.projects :nth-child(2) {
+    align-self: start;
+}
+
+#project_description {
+    font-size: 0.6rem;
+    font-style: italic;
+    
+}
+
+#date_and_time_div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.task_inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.task_inputs > input {
+    width: 126.5px;
+    text-align: center;
+}
+
+#task_name_input {
+    width: calc(100% - 4px);
+}
+
+#checkboxes_div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#checkboxes_div > div {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+}
+
+#task_buttons_div > * {
+    width: 50%
+}
+
+.project_inputs_div > * {
+    width: 100%;
+}
+
+.project_inputs_div > input, .project_inputs_div > textarea {
+    width: calc(100% - 4px);
+}
+
+#content_div {
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: 1fr 9fr;
+    padding: 0.5rem 2rem;
+}
+
+#full_task_div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 0 1rem;
+}
+
+#full_task_div > button {
+    align-self: end;
+}
+
+#important_tasks_div {
+    width: 100%;
+    margin-bottom: 5rem;
+}
+
+#important_tasks_div > p:first-child {
+    padding-top: 1.5rem;
+}
+
+#other_tasks_div {
+    width: 100%;
+}
+
+#other_tasks_div > p:first-child {
+    padding-top: 1.5rem;
+}
+.task_details {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 5fr 1fr 1fr 1fr;
+    place-items: center;
+}
+
+.task_details > :nth-child(5) {
+    justify-self: start;
+}
+
+.detail_done {
+    text-decoration: line-through;
+}
+
+.task_headers {
+    text-align: center;
+}
+
+.task_headers:first-child {
+    justify-self: start;
+}
+
+.task_details > p {
+    margin-top: 1rem;
+}
+
+.task_details > input {
+    height: 1rem;
+    width: 1rem;
+    align-self: end;
+    justify-self: center;
+}
+
+#date_headers {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border: 1px solid black;
+    justify-items: center;
+}
+
+#day_divs_parent {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+}
+
+.day_divs {
+    border: 1px solid black;
+    overflow: hidden;
+}
+
+.day_divs > p {
+    font-size: 0.75rem;
 }

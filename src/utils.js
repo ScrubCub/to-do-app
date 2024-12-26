@@ -21,7 +21,7 @@ export function appendAllChildren(parent, children) {
 
 export function setLabelForInput(input, label, id) {
     input.id = id;
-    label.for = id;
+    label.setAttribute('for', id);
 }
 
 export function createProjectObject(title, description, tasks) {
@@ -34,13 +34,15 @@ export function createProjectObject(title, description, tasks) {
     return projectObject;
 };
 
-export function createTaskObject(task, start, end, priority, projectParent) {
+export function createTaskObject(task, date, start, end, priority, projectParent, completed = false) {
     let taskObject = {
         task: task,
+        date: date,
         start: start,
         end: end,
         priority: priority,
-        parent: projectParent
+        parent: projectParent,
+        completed: completed
     }
 
     return taskObject;
@@ -50,4 +52,80 @@ export function updateTaskProjectParent(parentName, tasks) {
     tasks.forEach((taskObject) => {
         taskObject.parent = parentName;
     })
+};
+
+export function deleteProjectFromList(name, globalProjectList) {
+    let projIndex = globalProjectList.findIndex((index) => {
+        index.name == name;
+    });
+
+    globalProjectList.splice(projIndex, 1);
+
+};
+
+export function deleteTaskFromList(task, taskList) {
+    let taskIndex = taskList.findIndex((taskObject) => {
+        return taskObject.task == task
+    });
+
+    taskList.splice(taskIndex, 1);
+}
+
+export function checkProjectExistence(projectName, globalProjectList) {
+
+    return Boolean(1 + globalProjectList.findIndex((elem) => {
+        return elem.title == projectName;
+    }));
+}
+
+export function resetValues(inputs) {
+    inputs.forEach((elem) => {
+        elem.value = '';
+    })
+}
+
+export function setNewMaxHeight(parentDiv, childDiv, mode = 'add') {
+    let currentParentHeight = Number(parentDiv.getAttribute('style').slice(12, -3));
+    let currentChildHeight = Number(childDiv.offsetHeight);
+
+    if (mode == 'add') {
+        return (`${currentParentHeight - 113 + currentChildHeight}px`);
+    } else if (mode == 'remove') {
+        currentParentHeight = parentDiv.offsetHeight;
+        return (`${currentParentHeight - currentChildHeight}px`)
+    }
+
+}
+
+export function createDayDivs(amount) {
+    const divs = [];
+    for (let i = 0; i < amount; i++) {
+        let day = document.createElement('div');
+        day.id = `day_${i+1}`;
+        day.className = 'day_divs';
+        divs.push(day);
+    }
+    return divs;
+}
+
+export function nameDaysOfTheWeek(list) {
+    list[0].textContent = 'Sunday';
+    list[1].textContent = 'Monday';
+    list[2].textContent = 'Tuesday';
+    list[3].textContent = 'Wednesday';
+    list[4].textContent = 'Thursday';
+    list[5].textContent = 'Friday';
+    list[6].textContent = 'Saturday';
+
+}
+
+export function compareTime(start, end) {
+    let splitStart = start.split(':');
+    let splitEnd = end.split(':');
+
+    if (Number(splitEnd[0]) < Number(splitStart[0])) {
+        return true;
+    }
+
+    return false;
 }
