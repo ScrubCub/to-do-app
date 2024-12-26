@@ -55,11 +55,7 @@ export function updateTaskProjectParent(parentName, tasks) {
 };
 
 export function deleteProjectFromList(name, globalProjectList) {
-    let projIndex = globalProjectList.findIndex((index) => {
-        index.name == name;
-    });
-
-    globalProjectList.splice(projIndex, 1);
+    globalProjectList.removeItem(name);
 
 };
 
@@ -73,9 +69,14 @@ export function deleteTaskFromList(task, taskList) {
 
 export function checkProjectExistence(projectName, globalProjectList) {
 
-    return Boolean(1 + globalProjectList.findIndex((elem) => {
-        return elem.title == projectName;
-    }));
+    for (let i = 0; i < globalProjectList.length; i++) {
+        ;
+        if (JSON.parse(globalProjectList.getItem(`${projectName}`)) != null) {
+            return true;
+        } 
+    }
+
+    return false;
 }
 
 export function resetValues(inputs) {
@@ -128,4 +129,8 @@ export function compareTime(start, end) {
     }
 
     return false;
+}
+
+export function updateProjectList(globalProjectList, projectObject) {
+    globalProjectList.setItem(`${projectObject.title}`, JSON.stringify(projectObject));
 }

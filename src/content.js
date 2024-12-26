@@ -1,5 +1,6 @@
 import { startOfToday, getDaysInMonth, startOfMonth } from 'date-fns';
-import { appendAllChildren, createDayDivs, createElements, nameDaysOfTheWeek } from './utils.js';
+import { appendAllChildren, createDayDivs, createElements, nameDaysOfTheWeek, updateProjectList } from './utils.js';
+import { globalProjectList } from './entry.js';
 
 export function createContentDiv() {
     let today = startOfToday();
@@ -42,20 +43,21 @@ export function showAllTasksOfProject(projectObject) {
     let tasks = projectObject.tasks;
     let taskList = {};
 
-    tasks.forEach((task) => {
-        if (!taskList.hasOwnProperty(task.date.getDate())) {
-            let property = task.date.getDate();
+    tasks.forEach((currentTask) => {
+        let taskDate = new Date(currentTask.date);
+        if (!taskList.hasOwnProperty(taskDate.getDate())) {
+            let property = taskDate.getDate();
             taskList[`${property}`] = [];
-            taskList[`${property}`].push(task);
+            taskList[`${property}`].push(currentTask);
         } else {
-            let property = task.date.getDate();
-            taskList[`${property}`].push(task);
+            let property = taskDate.getDate();
+            taskList[`${property}`].push(currentTask);
         }
     })
     return taskList;
 }
 
-export function populateContentWithTasks(taskList) {
+export function populateContentWithTasks(taskList, projectObject) {
     let taskDates = Object.getOwnPropertyNames(taskList);
     let contentDiv = document.querySelector('body > div > div:last-child');
     contentDiv.replaceWith(createContentDiv());
@@ -73,12 +75,12 @@ export function populateContentWithTasks(taskList) {
         })
 
         dateDiv.addEventListener('click', () => {
-            showTasksFull(tasksOfTheDay, taskList);
+            showTasksFull(tasksOfTheDay, taskList, projectObject);
         })
     })
 }
 
-function showTasksFull(tasksOfTheDay, taskList) {
+function showTasksFull(tasksOfTheDay, taskList, projectObject) {
     let contentDiv = document.getElementById('content_div');
 
     const [
@@ -103,7 +105,7 @@ function showTasksFull(tasksOfTheDay, taskList) {
 
     exitButton.addEventListener('click', () => {
         fullTaskDiv.replaceWith(createContentDiv());
-        populateContentWithTasks(taskList);
+        populateContentWithTasks(taskList, projectObject);
     })
 
     importantTasksDiv.textContent = 'Important Tasks: ';
@@ -114,7 +116,6 @@ function showTasksFull(tasksOfTheDay, taskList) {
 
 
     tasksOfTheDay.forEach((task) => {
-        console.log(task.completed);
         let [
             taskDiv
         ] = createElements('div', 1);
@@ -162,6 +163,7 @@ function showTasksFull(tasksOfTheDay, taskList) {
                 start.className = 'detail_done';
                 end.className = 'detail_done';
                 task.completed = true;
+                updateProjectList(globalProjectList, projectObject)
                 return
             }
 
@@ -169,6 +171,7 @@ function showTasksFull(tasksOfTheDay, taskList) {
             start.className = 'detail';
             end.className = 'detail';
             task.completed = false;
+            updateProjectList(globalProjectList, projectObject)
         })
 
         appendAllChildren(taskDiv, [nameHeader, startHeader, endHeader, completedHeader, name, start, end, completedCheckbox]);

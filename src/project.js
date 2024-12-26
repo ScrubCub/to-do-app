@@ -3,25 +3,31 @@ import { globalProjectList } from "./entry.js";
 import { createTaskDiv } from "./task.js";
 import { showAllTasksOfProject, populateContentWithTasks, createContentDiv } from "./content.js";
 
+export function initProjectList(globalProjectList) {
+    let projectList = document.querySelector('#project_list_div');
+    // globalProjectList.clear();
+    for (let i = globalProjectList.length - 1; i >= 0; i--) {
+        let currentProjectObject = JSON.parse(globalProjectList.getItem(globalProjectList.key(i)));
+        let projectDiv = createSidebarProjectDiv(currentProjectObject, globalProjectList);
+
+        projectList.appendChild(projectDiv);
+    }
+}
+
 function createProject(title, desc, taskList) {
     const projectObject = createProjectObject();
     let projectList = document.querySelector('#project_list_div');
-    let projectDialogWindow = document.querySelector('#project_dialog_window');
 
 
     projectObject.title = title
     projectObject.description = desc
-    projectObject.id = globalProjectList.length;
+    projectObject.id = `id_${title}`;
     projectObject.tasks = taskList;
-    globalProjectList.push(projectObject);
+    globalProjectList.setItem(title, JSON.stringify(projectObject));
 
-    let projectDiv = createSidebarProjectDiv(projectObject, globalProjectList);
+    let projectDiv = createSidebarProjectDiv(JSON.parse(globalProjectList.getItem(`${title}`)), globalProjectList);
 
     projectList.appendChild(projectDiv);
-    updateTaskProjectParent(title, taskList);
-    taskList = [];
-    projectDialogWindow.close();
-    projectDialogWindow.remove();
 }
 
 function createSidebarProjectDiv(projectObject, globalProjectList) {
@@ -47,7 +53,6 @@ function createSidebarProjectDiv(projectObject, globalProjectList) {
 
     projectDesc.id = 'project_description';
 
-    console.log(projectObject.desc)
     projectName.textContent = projectObject.title;
     projectDesc.textContent = projectObject.description;
     
@@ -56,7 +61,7 @@ function createSidebarProjectDiv(projectObject, globalProjectList) {
 
     projectDetails.addEventListener('click', () => {
         let taskList = showAllTasksOfProject(projectObject);
-        populateContentWithTasks(taskList);
+        populateContentWithTasks(taskList, projectObject);
     })
 
     deleteProjectButton.addEventListener('click', () => {
@@ -142,7 +147,8 @@ export function createProjectDialogWindow() {
     })
 
     submitProjectButton.addEventListener('click', () => {
-        let existence = checkProjectExistence('project_' + projectTitleInput.value, globalProjectList);
+        let existence = checkProjectExistence(projectTitleInput.value, globalProjectList);
+        let projectDialogWindow = document.querySelector('#project_dialog_window');
         if (!projectTitleInput.value) {
             console.log('empty title');
             return
@@ -158,7 +164,13 @@ export function createProjectDialogWindow() {
             return
         }
 
-        createProject(projectTitleInput.value, projectDescInput.value, taskList)
+        createProject(projectTitleInput.value, projectDescInput.value, taskList);
+        updateTaskProjectParent(projectTitleInput.value, taskList);
+        taskList = [];
+        projectDialogWindow.close();
+        projectDialogWindow.remove();
+
+        
     })
 
     return projectDialogWindow;
