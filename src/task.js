@@ -2,7 +2,7 @@ import { createElements, appendAllChildren, setLabelForInput, createTaskObject, 
 import {startOfToday, parseJSON} from "date-fns";
 
 
-function createTask(taskList, task, date, start, end, priority) {
+export function createTask(taskList, task, date, start, end, priority) {
     const projectDiv = document.querySelector('#project_div');
     const addNewTask = document.querySelector('div:has(>#add_new_task_button)');
     const taskObject = createTaskObject();
@@ -17,6 +17,7 @@ function createTask(taskList, task, date, start, end, priority) {
     taskObject.id = taskList.length;
     addNewTask.before(taskDialogDiv);
     projectDiv.style.maxHeight = setNewMaxHeight(projectDiv, taskDialogDiv, 'add');
+    console.log(projectDiv.style.maxHeight);
     taskList.push(taskObject);
 }
 
@@ -44,7 +45,6 @@ function createTaskDialogDiv(name, taskList) {
             taskDiv.remove();
         }, 500);
         deleteTaskFromList(name, taskList);
-        console.log(taskList)
     });
 
     return taskDiv;
@@ -128,6 +128,7 @@ export function createTaskDiv(taskList) {
 
     submitTaskButton.type = 'button';
     submitTaskButton.textContent = 'Submit';
+    submitTaskButton.id = 'submit_task_button';
 
     cancelTaskButton.type = 'button';
     cancelTaskButton.textContent = 'Cancel';
@@ -181,23 +182,9 @@ export function createTaskDiv(taskList) {
             return
         }
         if (taskNameInput.value) {
-            createTask(taskList, taskNameInput.value, dateInput.value, taskStartInput.value, taskEndInput.value, priorityBox.value)
-            // const addNewTask = document.querySelector('div:has(>#add_new_task_button)');
-            // const taskObject = createTaskObject();
-            
-            // let taskDialogDiv = createTaskDialogDiv(taskNameInput.value, taskList)
+            console.log(taskList);
 
-            // taskObject.task = taskNameInput.value;
-            // taskObject.date = parseJSON(dateInput.value + ' 00:00:00');
-            // taskObject.start = taskStartInput.value;
-            // taskObject.end = taskEndInput.value;
-            // taskObject.priority = priorityBox.value;
-            // taskObject.id = taskList.length;
-            // addNewTask.before(taskDialogDiv);
-            // projectDiv.style.maxHeight = setNewMaxHeight(projectDiv, taskDialogDiv, 'add');
-            // taskNameInput.value = '';
-            // console.log(taskObject.date);
-            // taskList.push(taskObject);
+            createTask(taskList, taskNameInput.value, dateInput.value, taskStartInput.value, taskEndInput.value, priorityBox.value)
             taskNameInput.value = '';
 
             
@@ -205,6 +192,8 @@ export function createTaskDiv(taskList) {
         } else {
             //Add error message; implement same logic as the one in proj
         }
+
+        console.log(taskList)
     });
 
     cancelTaskButton.addEventListener('click', () => {

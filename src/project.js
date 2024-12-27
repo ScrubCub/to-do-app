@@ -2,6 +2,7 @@ import { createElements, appendAllChildren, createProjectObject, updateTaskProje
 import { globalProjectList } from "./entry.js";
 import { createTaskDiv } from "./task.js";
 import { showAllTasksOfProject, populateContentWithTasks, createContentDiv } from "./content.js";
+import {editProject} from "./editProject.js";
 
 export function initProjectList(globalProjectList) {
     let projectList = document.querySelector('#project_list_div');
@@ -14,11 +15,9 @@ export function initProjectList(globalProjectList) {
     }
 }
 
-function createProject(title, desc, taskList) {
+export function createProject(title, desc, taskList) {
     const projectObject = createProjectObject();
-    let projectList = document.querySelector('#project_list_div');
-
-
+    
     projectObject.title = title
     projectObject.description = desc
     projectObject.id = `id_${title}`;
@@ -27,10 +26,10 @@ function createProject(title, desc, taskList) {
 
     let projectDiv = createSidebarProjectDiv(JSON.parse(globalProjectList.getItem(`${title}`)), globalProjectList);
 
-    projectList.appendChild(projectDiv);
+    return projectDiv;
 }
 
-function createSidebarProjectDiv(projectObject, globalProjectList) {
+export function createSidebarProjectDiv(projectObject, globalProjectList) {
     let [
         projectDiv,
         projectDetails,
@@ -46,10 +45,11 @@ function createSidebarProjectDiv(projectObject, globalProjectList) {
         projectDesc
     ] = createElements('p', 2);
 
-    appendAllChildren(projectDiv, [deleteProjectButton, projectDetails]);
+    appendAllChildren(projectDiv, [deleteProjectButton, projectDetails, editProjectButton]);
     appendAllChildren(projectDetails, [projectName, projectDesc])
 
     projectDiv.className = 'projects';
+    projectDiv.id = `project_${projectObject.title}`;
 
     projectDesc.id = 'project_description';
 
@@ -58,6 +58,9 @@ function createSidebarProjectDiv(projectObject, globalProjectList) {
     
     deleteProjectButton.type = 'button';
     deleteProjectButton.textContent = 'X';
+
+    editProjectButton.type = 'button';
+    editProjectButton.textContent = 'Edit project';
 
     projectDetails.addEventListener('click', () => {
         let taskList = showAllTasksOfProject(projectObject);
@@ -73,7 +76,8 @@ function createSidebarProjectDiv(projectObject, globalProjectList) {
     });
 
     editProjectButton.addEventListener('click', () => {
-
+        console.log('Edit');
+        editProject(globalProjectList, projectObject.title);
     })
 
     return projectDiv;
@@ -164,7 +168,10 @@ export function createProjectDialogWindow() {
             return
         }
 
-        createProject(projectTitleInput.value, projectDescInput.value, taskList);
+        let projectDiv = createProject(projectTitleInput.value, projectDescInput.value, taskList);
+        let projectList = document.querySelector('#project_list_div');
+        projectList.appendChild(projectDiv);
+
         updateTaskProjectParent(projectTitleInput.value, taskList);
         taskList = [];
         projectDialogWindow.close();

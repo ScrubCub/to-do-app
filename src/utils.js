@@ -67,7 +67,14 @@ export function deleteTaskFromList(task, taskList) {
     taskList.splice(taskIndex, 1);
 }
 
-export function checkProjectExistence(projectName, globalProjectList) {
+export function checkProjectExistence(projectName, globalProjectList, mode = 'check', initialName) {
+
+    if (mode == 'edit') {
+       if (initialName == projectName) {
+        return false;
+       }
+        
+    }
 
     for (let i = 0; i < globalProjectList.length; i++) {
         ;
@@ -133,4 +140,12 @@ export function compareTime(start, end) {
 
 export function updateProjectList(globalProjectList, projectObject) {
     globalProjectList.setItem(`${projectObject.title}`, JSON.stringify(projectObject));
+}
+
+export function addDateToDiv(days) {
+    for (let i = 0; i < days.length; i++) {
+        let date = document.createElement('p');
+        date.textContent = `${i+1}`;
+        days[i].appendChild(date);
+    }
 }

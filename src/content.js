@@ -1,17 +1,21 @@
 import { startOfToday, getDaysInMonth, startOfMonth } from 'date-fns';
-import { appendAllChildren, createDayDivs, createElements, nameDaysOfTheWeek, updateProjectList } from './utils.js';
+import { addDateToDiv, appendAllChildren, createDayDivs, createElements, nameDaysOfTheWeek, updateProjectList, getDayDivs } from './utils.js';
 import { globalProjectList } from './entry.js';
 
+let today = startOfToday();
+let numberOfDaysInMonth = getDaysInMonth(today);
+
 export function createContentDiv() {
-    let today = startOfToday();
+    
     let dateOfToday = today.getDate(); // 1 - 31
     let dayOfToday = today.getDay(); // 0 - 6 (Sunday - Saturday)
     let monthOfToday = today.getMonth(); // 0 - 11 (Jan - Dec)
     let yearOfToday = today.getFullYear(); // YYYY
-    let numberOfDaysInMonth = getDaysInMonth(today);
     const days = createDayDivs(numberOfDaysInMonth);
     let firstDay = days[0];
     let startOfMonthDate = Number(startOfMonth(today).getDay()) + 1;
+
+    addDateToDiv(days);
 
     const [
         contentDiv,
@@ -61,11 +65,17 @@ export function populateContentWithTasks(taskList, projectObject) {
     let taskDates = Object.getOwnPropertyNames(taskList);
     let contentDiv = document.querySelector('body > div > div:last-child');
     contentDiv.replaceWith(createContentDiv());
+    
 
     taskDates.forEach((date) => {
         let dateDiv = document.querySelector(`#day_${date}`);
+        console.log(dateDiv);
         let tasksOfTheDay = [];
+        let day = document.createElement('p');
+
+        day.textContent = `${date}`;
         dateDiv.replaceChildren();
+        dateDiv.appendChild(day);
 
         taskList[`${date}`].forEach((task) => {
             let taskDiv = document.createElement('p');
